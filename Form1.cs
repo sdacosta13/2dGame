@@ -7,22 +7,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Diagnostics;
 namespace _2dGame
 {
     public partial class Form1 : Form
     {
         bool movingLeft = false, movingRight = false, movingUp = false, movingDown = false;
+        bool exitCondition = true;
         public Form1()
         {
             InitializeComponent();
+        }
 
-        }
-        private void Form1_Load(object sender, EventArgs e)
+      
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            System.Threading.Thread t = new System.Threading.Thread(DoThisAllTheTime);
-            t.Start();
+            exitCondition = false;
         }
+
+
         private void keyIsDown(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.W)
@@ -62,29 +66,44 @@ namespace _2dGame
                 movingRight = false;
             }
         }
-        public void DoThisAllTheTime()
+
+        private void MainGameTimer(object sender, EventArgs e)
         {
-            while (true)
+            updatePos();
+        }
+        public void updatePos()
+        {
+
+            int x = 0;
+            int y = 0;
+            if (movingLeft)
             {
-                int x = 0;
-                int y = 0;
-                if (movingLeft)
-                {
-                    x -= 1;
-                }
-                if(movingRight)
-                {
-                    x += 1;
-                }
-                if (movingUp)
-                {
-                    y -= 1;
-                }
-                if(movingDown)
-                {
-                    y += 1;
-                }
+                x -= 10;
             }
+            if(movingRight)
+            {
+                x += 10;
+            }
+            if (movingUp)
+            {
+                y -= 10;
+            }
+            if(movingDown)
+            {
+                y += 10;
+            }
+            Debug.WriteLine("Y0");
+            player.Left += x;
+            if(player.Location.X < 0 || player.Location.X > 1920)
+            {
+                player.Left -= x;
+            }
+            player.Top += y;
+            if (player.Location.Y < 0 || player.Location.Y > 1080)
+            {
+                player.Top -= y;
+            }
+
         }
     }
 }
